@@ -22,6 +22,15 @@ class BadRunnable:
         return "not-a-dict"
 
 
+class CaptureRunnable:
+    def __init__(self) -> None:
+        self.inputs = []
+
+    def invoke(self, input_state):
+        self.inputs.append(dict(input_state))
+        return {"done": True, "state": {}}
+
+
 class TestLangChainLoopAgent(unittest.TestCase):
     def test_stops_when_done_is_true(self):
         agent = LangChainLoopAgent(CountingRunnable(stop_at=3), max_iterations=10)
@@ -52,6 +61,15 @@ class TestLangChainLoopAgent(unittest.TestCase):
     def test_rejects_invalid_max_iterations(self):
         with self.assertRaises(ValueError):
             LangChainLoopAgent(CountingRunnable(stop_at=1), max_iterations=0)
+
+    def test_passes_initial_state_to_first_invoke(self):
+        runnable = CaptureRunnable()
+        agent = LangChainLoopAgent(runnable, max_iterations=3)
+
+        result = agent.run({"value": 7, "tag": "seed"})
+
+        self.assertTrue(result.finished)
+        self.assertEqual(runnable.inputs[0], {"value": 7, "tag": "seed"})
 
 
 if __name__ == "__main__":

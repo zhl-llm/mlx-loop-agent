@@ -25,5 +25,5 @@ print(result.state)       # {'step': 3}
 
 The runnable is expected to expose `invoke(state) -> dict` and may return:
 
-- `state`: partial state updates merged into the running state
+- `state`: partial state updates merged into the running state (new values overwrite existing keys)
 - `done`: boolean stop signal for the loop
