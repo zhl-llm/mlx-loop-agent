@@ -7,7 +7,7 @@ from typing import Any, Protocol
 class RunnableLike(Protocol):
     """Minimal protocol compatible with LangChain Runnable.invoke."""
 
-    def invoke(self, input: dict[str, Any]) -> dict[str, Any]: ...
+    def invoke(self, input_state: dict[str, Any]) -> dict[str, Any]: ...
 
 
 @dataclass(frozen=True)
@@ -30,6 +30,11 @@ class LangChainLoopAgent:
         self._max_iterations = max_iterations
 
     def run(self, initial_state: dict[str, Any] | None = None) -> LoopRunResult:
+        """Execute the loop and return accumulated state.
+
+        State merging is shallow: values from each response's ``state`` payload
+        overwrite existing keys with ``dict.update`` semantics.
+        """
         state = dict(initial_state or {})
         steps: list[dict[str, Any]] = []
 
