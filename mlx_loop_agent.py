@@ -33,7 +33,7 @@ class LangChainLoopAgent:
         state = dict(initial_state or {})
         steps: list[dict[str, Any]] = []
 
-        for idx in range(self._max_iterations):
+        for iteration in range(self._max_iterations):
             response = self._runnable.invoke(state)
             if not isinstance(response, dict):
                 raise TypeError("runnable.invoke must return a dict")
@@ -45,7 +45,7 @@ class LangChainLoopAgent:
                 return LoopRunResult(
                     state=state,
                     steps=steps,
-                    iterations=idx + 1,
+                    iterations=iteration + 1,
                     finished=True,
                 )
 

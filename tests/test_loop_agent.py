@@ -8,9 +8,9 @@ class CountingRunnable:
         self._stop_at = stop_at
         self._calls = 0
 
-    def invoke(self, input):
+    def invoke(self, input_state):
         self._calls += 1
-        value = input.get("value", 0) + 1
+        value = input_state.get("value", 0) + 1
         return {
             "state": {"value": value},
             "done": self._calls >= self._stop_at,
@@ -18,7 +18,7 @@ class CountingRunnable:
 
 
 class BadRunnable:
-    def invoke(self, input):
+    def invoke(self, input_state):
         return "not-a-dict"
 
 
